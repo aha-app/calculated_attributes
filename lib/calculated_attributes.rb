@@ -1,21 +1,22 @@
 require "calculated_attributes/version"
 require "active_record"
 
-ActiveRecord::Base.extend Module.new {
+module CalculatedAttributes
   def calculated(*args)
-    @config ||= RbConfig.new
+    @config ||= CalculatedAttributes::Config.new
     @config.calculated(args.first, args.last) if args.size == 2
     @config
   end
   
-  class RbConfig
+  class CalculatedAttributes::Config
     def calculated(title=nil, lambda=nil)
       @calculations ||= {}
       @calculations[title] ||= lambda if title and lambda
       @calculations
     end
   end
-}
+end
+ActiveRecord::Base.extend CalculatedAttributes
 
 ActiveRecord::Base.send(:include, Module.new {
   def calculated(title)
