@@ -1,27 +1,28 @@
 require "calculated_attributes/version"
 require "active_record"
-require 'byebug'
 
 ActiveRecord::Base.extend Module.new {
   def calculated(*args)
-    @calculations ||= {}
-    case args.size
-    when 1
-      @calculations[args.first]
-    when 2
-      @calculations[args.first] ||= args.last
+    @config ||= Config.new
+    @config.calculated(args.first, args.last) if args.size == 2
+    @config
+  end
+  
+  class Config
+    def calculated(title=nil, lambda=nil)
+      @calculations ||= {}
+      @calculations[title] ||= lambda if title and lambda
       @calculations
-    else
-      raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..2)")
     end
   end
 }
 
 ActiveRecord::Relation.send(:include, Module.new {
   def calculated(*args)
+    selection = [self.klass.arel_table[Arel.star]]
     args.each do |arg|
-      # select()
+      selection.push "(#{self.klass.calculated.calculated[arg].call}) as #{arg.to_s}"
     end
-    byebug
+    self.klass.select(selection)
   end
 })

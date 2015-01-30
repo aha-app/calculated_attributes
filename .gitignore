@@ -12,3 +12,6 @@
 *.o
 *.a
 mkmf.log
+
+# Ignore test database.
+/spec/*.sqlite3
