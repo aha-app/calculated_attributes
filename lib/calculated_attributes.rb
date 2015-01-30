@@ -22,6 +22,14 @@ ActiveRecord::Base.send(:include, Module.new {
   def calculated(*args)
     self.class.scoped.calculated(*args).find(self.id)
   end
+  
+  def method_missing(sym, *args, &block)
+    if !@attributes.include?(sym.to_s) and self.class.calculated.calculated[sym]
+      self.class.scoped.calculated(sym).find(self.id).comments
+    else
+      super(sym, *args, &block)
+    end
+  end
 })
 
 ActiveRecord::Relation.send(:include, Module.new {

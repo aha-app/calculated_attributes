@@ -19,6 +19,10 @@ describe "calculated_attributes" do
     expect(Post.first.calculated(:comments).comments).to eq(1)
   end
   
+  it "allows anonymous access via model instance method" do
+    expect(Post.first.comments).to eq(1)
+  end
+  
   it "allows access to multiple calculated attributes via model instance method" do
     post = Post.first.calculated(:comments, :comments_two)
     expect(post.comments).to eq(1)
