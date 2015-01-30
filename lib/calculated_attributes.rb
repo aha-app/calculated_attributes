@@ -17,6 +17,12 @@ ActiveRecord::Base.extend Module.new {
   end
 }
 
+ActiveRecord::Base.send(:include, Module.new {
+  def calculated(title)
+    self.class.scoped.calculated(title).find(self.id)
+  end
+})
+
 ActiveRecord::Relation.send(:include, Module.new {
   def calculated(*args)
     selection = [self.klass.arel_table[Arel.star]]

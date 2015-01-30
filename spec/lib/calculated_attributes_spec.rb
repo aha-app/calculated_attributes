@@ -14,4 +14,8 @@ describe "calculated_attributes" do
   it "nests with other query options" do
     expect(Post.where(id: 1).calculated(:comments).first.comments).to eq(1)
   end
+  
+  it "allows access via model instance method" do
+    expect(Post.first.calculated(:comments).comments).to eq(1)
+  end
 end
