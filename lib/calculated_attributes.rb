@@ -3,12 +3,12 @@ require "active_record"
 
 ActiveRecord::Base.extend Module.new {
   def calculated(*args)
-    @config ||= Config.new
+    @config ||= RbConfig.new
     @config.calculated(args.first, args.last) if args.size == 2
     @config
   end
   
-  class Config
+  class RbConfig
     def calculated(title=nil, lambda=nil)
       @calculations ||= {}
       @calculations[title] ||= lambda if title and lambda
