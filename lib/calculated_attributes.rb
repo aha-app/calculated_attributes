@@ -19,8 +19,8 @@ end
 ActiveRecord::Base.extend CalculatedAttributes
 
 ActiveRecord::Base.send(:include, Module.new {
-  def calculated(title)
-    self.class.scoped.calculated(title).find(self.id)
+  def calculated(*args)
+    self.class.scoped.calculated(*args).find(self.id)
   end
 })
 
