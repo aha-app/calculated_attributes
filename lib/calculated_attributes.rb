@@ -25,7 +25,7 @@ ActiveRecord::Base.send(:include, Module.new {
   
   def method_missing(sym, *args, &block)
     if !@attributes.include?(sym.to_s) and self.class.calculated.calculated[sym]
-      self.class.scoped.calculated(sym).find(self.id).comments
+      self.class.scoped.calculated(sym).find(self.id).send(sym)
     else
       super(sym, *args, &block)
     end
