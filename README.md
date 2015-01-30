@@ -56,6 +56,11 @@ You may also use the `calculated` method on a single model instance, like so:
 
     Post.first.calculated(:comments_count).comments_count
     #=> 5
+    
+If you have defined a `calculated` method, results of that method will be returned rather than throwing a method missing error even if you don't explicitly use the `calculated()` call on the instance:
+
+    Post.first.comments_count
+    #=> 5
 
 ## Contributing
 
