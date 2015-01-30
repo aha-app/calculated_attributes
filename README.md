@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Add each calculated attribute to your model using the `calculated` keyword. It accepts two parameters: a symbol representing the name of the calculated attribute, and a lambda containing a string to calculate the attribute.
 
-For example, if we have two models, a `Post` and a `Comment`, and `Comment` has a `post_id` attribute, we might write the following code to add a comments count to each Post record in a relation:
+For example, if we have two models, `Post` and `Comment`, and `Comment` has a `post_id` attribute, we might write the following code to add a comments count to each `Post` record in a relation:
 
     class Post < ActiveRecord::Base
     ...
@@ -51,6 +51,11 @@ And then access both the `comments_count` and `tags_count` like so:
     #=> 5
     post.tags_count
     #=> 2
+    
+You may also use the `calculated` method on a single model instance, like so:
+
+    Post.first.calculated(:comments_count).comments_count
+    #=> 5
 
 ## Contributing
 
