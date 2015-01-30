@@ -36,7 +36,9 @@ ActiveRecord::Relation.send(:include, Module.new {
   def calculated(*args)
     selection = [self.klass.arel_table[Arel.star]]
     args.each do |arg|
-      selection.push "(#{self.klass.calculated.calculated[arg].call}) as #{arg.to_s}"
+      sql = self.klass.calculated.calculated[arg].call
+      sql = sql.to_sql unless sql.is_a? String
+      selection.push "(#{sql}) as #{arg.to_s}"
     end
     self.klass.select(selection)
   end

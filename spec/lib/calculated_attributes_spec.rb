@@ -28,4 +28,8 @@ describe "calculated_attributes" do
     expect(post.comments).to eq(1)
     expect(post.comments_two).to eq(1)
   end
+  
+  it "allows attributes to be defined using AREL" do
+    expect(Post.scoped.calculated(:comments_arel).first.comments_arel).to eq(1)
+  end
 end

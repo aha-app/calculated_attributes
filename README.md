@@ -61,6 +61,14 @@ If you have defined a `calculated` method, results of that method will be return
 
     Post.first.comments_count
     #=> 5
+    
+If you like, you may define `calculated` lambdas using Arel syntax:
+
+    class Post < ActiveRecord::Base
+    ...
+      calculated :comments_count, -> { Comment.select(Arel::Nodes::NamedFunction.new("COUNT", [Comment.arel_table[:id]])).where(Comment.arel_table[:post_id].eq(Post.arel_table[:id])) }
+    ...
+    end
 
 ## Contributing
 
