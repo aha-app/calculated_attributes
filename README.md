@@ -77,3 +77,7 @@ If you like, you may define `calculated` lambdas using Arel syntax:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Credits
+
+Written by Zach Schneider based on ideas from Chris Waters.
