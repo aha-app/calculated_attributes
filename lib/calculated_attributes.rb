@@ -34,12 +34,21 @@ ActiveRecord::Base.send(:include, Module.new {
 
 ActiveRecord::Relation.send(:include, Module.new {
   def calculated(*args)
-    selection = [self.klass.arel_table[Arel.star]]
+    projections = self.arel.projections
     args.each do |arg|
       sql = self.klass.calculated.calculated[arg].call
-      sql = sql.to_sql unless sql.is_a? String
-      selection.push "(#{sql}) as #{arg.to_s}"
+      if sql.is_a? String
+        projections.push Arel.sql("(#{sql})").as(arg.to_s)
+      else
+        projections.push sql.as(arg.to_s)
+      end
     end
-    self.klass.select(selection)
+    self.select(projections)
+  end
+})
+
+Arel::SelectManager.send(:include, Module.new {
+  def projections
+    @ctx.projections
   end
 })
