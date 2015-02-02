@@ -72,8 +72,12 @@ If you like, you may define `calculated` lambdas using Arel syntax:
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/calculated_attributes/fork )
+1. Fork it ( https://github.com/aha-app/calculated_attributes/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Credits
+
+Written by Zach Schneider based on ideas from Chris Waters.
