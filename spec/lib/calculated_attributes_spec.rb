@@ -45,9 +45,13 @@ describe "calculated_attributes" do
   
   it "maintains previous scope" do
     expect(Post.where(text: "First post!").calculated(:comments).count).to eq(1)
+    expect(Post.where(text: "First post!").calculated(:comments).first.comments).to eq(1)
+    expect(Post.where("posts.text = 'First post!'").calculated(:comments).first.comments).to eq(1)
   end
   
   it "maintains subsequent scope" do
     expect(Post.scoped.calculated(:comments).where(text: "First post!").count).to eq(1)
+    expect(Post.scoped.calculated(:comments).where(text: "First post!").first.comments).to eq(1)
+    expect(Post.scoped.calculated(:comments).where("posts.text = 'First post!'").first.comments).to eq(1)
   end
 end
