@@ -60,21 +60,8 @@ Arel::SelectManager.send(:include, Module.new {
 
 module ActiveRecord
   module FinderMethods
-    def find_with_associations
-      join_dependency = construct_join_dependency_for_association_find
-      relation = construct_relation_for_association_find(join_dependency, arel.projections.select{ |p| p.is_a?(Arel::Nodes::Node) and p.is_calculated_attr? })
-      rows = connection.select_all(relation, 'SQL', relation.bind_values.dup)
-      join_dependency.instantiate(rows)
-    rescue ThrowResult
-      []
-    end
-    
-    def construct_join_dependency_for_association_find
-      including = (@eager_load_values + @includes_values).uniq
-      ActiveRecord::Associations::JoinDependency.new(@klass, including, [])
-    end
-    
-    def construct_relation_for_association_find(join_dependency, calculated_columns)
+    def construct_relation_for_association_find(join_dependency)
+      calculated_columns = arel.projections.select{ |p| p.is_a?(Arel::Nodes::Node) and p.is_calculated_attr? }
       relation = except(:includes, :eager_load, :preload, :select).select(join_dependency.columns.concat(calculated_columns))
       apply_join_dependency(relation, join_dependency)
     end
