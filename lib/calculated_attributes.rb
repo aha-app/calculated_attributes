@@ -70,8 +70,31 @@ module ActiveRecord
     def construct_relation_for_association_find(join_dependency)
       calculated_columns = arel.projections.select{ |p| p.is_a?(Arel::Nodes::Node) and p.is_calculated_attr? }
       relation = except(:includes, :eager_load, :preload, :select).select(join_dependency.columns.concat(calculated_columns))
+      join_dependency.set_calculated_columns(calculated_columns)
       apply_join_dependency(relation, join_dependency)
     end
+  end
+end
+
+class ActiveRecord::Associations::JoinDependency
+  def set_calculated_columns(calculated_columns)
+    @calculated_columns = calculated_columns
+  end
+  
+  def instantiate(rows)
+    primary_key = join_base.aliased_primary_key
+    parents = {}
+
+    records = rows.map { |model|
+      primary_id = model[primary_key]
+      parent = parents[primary_id] ||= join_base.instantiate(model)
+      construct(parent, @associations, join_associations, model)
+      @calculated_columns.each { |column| parent[column.right] = model[column.right] }
+      parent
+    }.uniq
+
+    remove_duplicate_results!(active_record, records, @associations)
+    records
   end
 end
 
