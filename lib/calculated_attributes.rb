@@ -24,9 +24,15 @@ ActiveRecord::Base.send(:include, Module.new {
   end
   
   def method_missing(sym, *args, &block)
-    if !@attributes.include?(sym.to_s) and self.class.calculated.calculated[sym]
+    if !@attributes.include?(sym.to_s) and (self.class.calculated.calculated[sym] or self.class.base_class.calculated.calculated[sym])
       Rails.logger.warn("Using calculated value without including it in the relation: #{sym}") if defined? Rails
-      self.class.scoped.calculated(sym).find(self.id).send(sym)
+      class_with_attr = 
+        if self.class.calculated.calculated[sym]
+          self.class
+        else
+          self.class.base_class
+        end
+      class_with_attr.scoped.calculated(sym).find(self.id).send(sym)
     else
       super(sym, *args, &block)
     end
@@ -37,7 +43,8 @@ ActiveRecord::Relation.send(:include, Module.new {
   def calculated(*args)
     projections = arel.projections
     args.each do |arg|
-      sql = klass.calculated.calculated[arg].call
+      lam = klass.calculated.calculated[arg] || klass.base_class.calculated.calculated[arg]
+      sql = lam.call
       if sql.is_a? String
         new_projection = Arel.sql("(#{sql})").as(arg.to_s)
         new_projection.is_calculated_attr!
@@ -69,11 +76,6 @@ module ActiveRecord
 end
 
 class Arel::Nodes::Node
-  def initialize(left, right = nil)
-    @is_calculated_attr = false
-    super(left, right)
-  end
-  
   def is_calculated_attr!
     @is_calculated_attr = true
   end
