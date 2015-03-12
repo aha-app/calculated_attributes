@@ -37,6 +37,11 @@ ActiveRecord::Base.send(:include, Module.new {
       super(sym, *args, &block)
     end
   end
+  
+  def respond_to?(method, include_private = false)
+    super || (!@attributes.include?(method.to_s) and (self.class.calculated.calculated[method] or self.class.base_class.calculated.calculated[method]))
+  end
+  
 })
 
 ActiveRecord::Relation.send(:include, Module.new {
