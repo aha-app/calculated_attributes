@@ -1,0 +1,22 @@
+AllCops:
+  Exclude:
+    - db/**/*
+
+BlockNesting: 
+  Max: 4
+ClassLength:
+  Enabled: False
+ClassVars:
+  Enabled: False
+CyclomaticComplexity:
+  Enabled: False
+Documentation:
+  Enabled: false
+LineLength:
+  Enabled: false
+MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
