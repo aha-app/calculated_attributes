@@ -22,11 +22,21 @@ ActiveRecord::Base.extend CalculatedAttributes
 
 ActiveRecord::Base.send(:include, Module.new do
   def calculated(*args)
-    self.class.scoped.calculated(*args).find(id)
+    if self.class.respond_to? :scoped
+      self.class.scoped.calculated(*args).find(id)
+    else
+      self.class.all.calculated(*args).find(id)
+    end
   end
 
   def method_missing(sym, *args, &block)
-    if !@attributes.include?(sym.to_s) && (self.class.calculated.calculated[sym] || self.class.base_class.calculated.calculated[sym])
+    no_sym_in_attr =
+      if @attributes.respond_to? :include?
+        !@attributes.include?(sym.to_s)
+      else
+        !@attributes.key?(sym.to_s)
+      end
+    if no_sym_in_attr && (self.class.calculated.calculated[sym] || self.class.base_class.calculated.calculated[sym])
       Rails.logger.warn("Using calculated value without including it in the relation: #{sym}") if defined? Rails
       class_with_attr =
         if self.class.calculated.calculated[sym]
@@ -34,14 +44,24 @@ ActiveRecord::Base.send(:include, Module.new do
         else
           self.class.base_class
         end
-      class_with_attr.scoped.calculated(sym).find(id).send(sym)
+      if class_with_attr.respond_to? :scoped
+        class_with_attr.scoped.calculated(sym).find(id).send(sym)
+      else
+        class_with_attr.all.calculated(sym).find(id).send(sym)
+      end
     else
       super(sym, *args, &block)
     end
   end
 
   def respond_to?(method, include_private = false)
-    super || (!@attributes.include?(method.to_s) && (self.class.calculated.calculated[method] || self.class.base_class.calculated.calculated[method]))
+    no_sym_in_attr =
+      if @attributes.respond_to? :include?
+        !@attributes.include?(method.to_s)
+      else
+        !@attributes.key?(method.to_s)
+      end
+    super || (no_sym_in_attr && (self.class.calculated.calculated[method] || self.class.base_class.calculated.calculated[method]))
   end
 end)
 
