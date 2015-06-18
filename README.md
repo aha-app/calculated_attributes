@@ -91,7 +91,7 @@ end
 In Rails 4.x, you cannot call `count` on a relation with calculated attributes, e.g.
 
 ```ruby
-`Post.scoped.calculated(:comments_count).count`
+Post.scoped.calculated(:comments_count).count
 ```
 
 will error. This is because of an [ActiveRecord issue](https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/calculations.rb#L368-L375) that does not permit Arel nodes in the count method.
