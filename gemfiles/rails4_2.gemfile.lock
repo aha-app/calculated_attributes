@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    calculated_attributes (0.0.18)
+    calculated_attributes (0.0.19)
       activerecord (>= 3.2.20)
 
 GEM
