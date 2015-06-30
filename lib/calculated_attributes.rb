@@ -187,6 +187,24 @@ module ActiveRecord
   end
 end
 
+module ActiveRecord
+  module AttributeMethods
+    module Write
+      # Updates the attribute identified by <tt>attr_name</tt> with the specified +value+. Empty strings
+      # for fixnum and float columns are turned into +nil+.
+      def write_attribute(attr_name, value)
+        attr_name = attr_name.to_s
+        attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
+        @attributes_cache.delete(attr_name)
+        column = column_for_attribute(attr_name)
+
+        @attributes[attr_name] = type_cast_attribute_for_write(column, value)
+      end
+    end
+  end
+end
+
+
 module Arel
   module Nodes
     class Node
