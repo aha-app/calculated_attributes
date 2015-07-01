@@ -58,8 +58,10 @@ ActiveRecord::Base.send(:include, Module.new do
     no_sym_in_attr =
       if @attributes.respond_to? :include?
         !@attributes.include?(method.to_s)
-      else
+      elsif @attributes.respond_to? :key?
         !@attributes.key?(method.to_s)
+      else
+        true
       end
     super || (no_sym_in_attr && (self.class.calculated.calculated[method] || self.class.base_class.calculated.calculated[method]))
   end
