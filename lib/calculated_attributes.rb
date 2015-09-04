@@ -105,13 +105,13 @@ module ActiveRecord
         case ActiveRecord::VERSION::MAJOR
         when 3
           unless defined?(@attribute_methods_mutex)
-            msg = "It looks like something (probably a gem/plugin) is overriding the " \
-                  "ActiveRecord::Base.inherited method. It is important that this hook executes so " \
-                  "that your models are set up correctly. A workaround has been added to stop this " \
-                  "causing an error in 3.2, but future versions will simply not work if the hook is " \
-                  "overridden. If you are using Kaminari, please upgrade as it is known to have had " \
+            msg = 'It looks like something (probably a gem/plugin) is overriding the ' \
+                  'ActiveRecord::Base.inherited method. It is important that this hook executes so ' \
+                  'that your models are set up correctly. A workaround has been added to stop this ' \
+                  'causing an error in 3.2, but future versions will simply not work if the hook is ' \
+                  'overridden. If you are using Kaminari, please upgrade as it is known to have had ' \
                   "this problem.\n\n"
-            msg << "The following may help track down the problem:"
+            msg << 'The following may help track down the problem:'
 
             meth = method(:inherited)
             if meth.respond_to?(:source_location)
@@ -209,7 +209,6 @@ module ActiveRecord
     end
   end
 end
-
 
 module Arel
   module Nodes
