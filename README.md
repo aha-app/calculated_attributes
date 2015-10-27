@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/calculated_attributes.svg)](https://badge.fury.io/rb/calculated_attributes)
+
 # CalculatedAttributes
 
 Automatically add calculated attributes from accessory select queries to ActiveRecord models.
