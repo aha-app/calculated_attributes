@@ -52,7 +52,7 @@ module ActiveRecord
         message_bus.instrument('instantiation.active_record', payload) do
           result_set.each do |row_hash|
             parent = parents[row_hash[primary_key]] ||= join_root.instantiate(row_hash, column_aliases)
-            @calculated_columns.each { |column| parent[column.right] = model[column.right] }
+            @calculated_columns.each { |column| parent[column.right] = model[column.right] } if @calculated_columns
             construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
           end
         end
