@@ -29,20 +29,35 @@ module ActiveRecord
     class JoinDependency
       attr_writer :calculated_columns
 
-      def instantiate(rows)
-        primary_key = join_base.aliased_primary_key
-        parents = {}
+      def instantiate(result_set, aliases)
+        primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
-        records = rows.map do |model|
-          primary_id = model[primary_key]
-          parent = parents[primary_id] ||= join_base.instantiate(model)
-          construct(parent, @associations, join_associations, model)
-          @calculated_columns.each { |column| parent[column.right] = model[column.right] }
-          parent
-        end.uniq
+        seen = Hash.new do |i, object_id|
+          i[object_id] = Hash.new do |j, child_class|
+            j[child_class] = {}
+          end
+        end
 
-        remove_duplicate_results!(active_record, records, @associations)
-        records
+        model_cache = Hash.new { |h, klass| h[klass] = {} }
+        parents = model_cache[join_root]
+        column_aliases = aliases.column_aliases join_root
+
+        message_bus = ActiveSupport::Notifications.instrumenter
+
+        payload = {
+          record_count: result_set.length,
+          class_name: join_root.base_klass.name
+        }
+
+        message_bus.instrument('instantiation.active_record', payload) do
+          result_set.each do |row_hash|
+            parent = parents[row_hash[primary_key]] ||= join_root.instantiate(row_hash, column_aliases)
+            @calculated_columns.each { |column| parent[column.right] = model[column.right] }
+            construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+          end
+        end
+
+        parents.values
       end
     end
   end
