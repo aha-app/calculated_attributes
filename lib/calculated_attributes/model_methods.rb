@@ -70,7 +70,14 @@ ActiveRecord::Relation.send(:include, Module.new do
     args.each do |arg|
       lam = klass.calculated.calculated[arg] || klass.base_class.calculated.calculated[arg]
       sql = lam.call
-      new_projection = sql.is_a?(String) ? Arel.sql("(#{sql})").as(arg.to_s) : sql.as(arg.to_s)
+      new_projection = 
+        if sql.is_a?(String)
+          Arel.sql("(#{sql})").as(arg.to_s)
+        elsif sql.respond_to? :to_sql
+          Arel.sql("(#{sql.to_sql})").as(arg.to_s)
+        else
+          sql.as(arg.to_s)
+        end
       new_projection.calculated_attr!
       projections.push new_projection
     end
