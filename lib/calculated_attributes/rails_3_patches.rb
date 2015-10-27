@@ -45,4 +45,26 @@ module ActiveRecord
       end
     end
   end
+
+  module Associations
+    class JoinDependency
+      attr_writer :calculated_columns
+
+      def instantiate(rows)
+        primary_key = join_base.aliased_primary_key
+        parents = {}
+
+        records = rows.map do |model|
+          primary_id = model[primary_key]
+          parent = parents[primary_id] ||= join_base.instantiate(model)
+          construct(parent, @associations, join_associations, model)
+          @calculated_columns.each { |column| parent[column.right] = model[column.right] }
+          parent
+        end.uniq
+
+        remove_duplicate_results!(active_record, records, @associations)
+        records
+      end
+    end
+  end
 end
