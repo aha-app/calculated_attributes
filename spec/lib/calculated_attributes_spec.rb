@@ -84,4 +84,24 @@ describe 'calculated_attributes' do
   it 'includes calculated attributes with STI and lambda on subclass' do
     expect(model_scoped(Article).calculated(:sub_comments).first.sub_comments).to eq(1)
   end
+
+  context 'when joining models' do
+    it 'includes calculated attributes' do
+      expect(model_scoped(Post).joins(:comments).calculated(:comments_count).first.comments_count).to eq(1)
+    end
+
+    context 'when conditions are specified on the joined table' do
+      it 'includes calculated models' do
+        scope = model_scoped(Post).joins(:comments)
+        expect(scope.first.comments_count).to eq(1)
+      end
+    end
+  end
+
+  context 'when eager loading models' do
+    it 'includes calculated attributes' do
+      scope = model_scoped(Post).includes(:comments).references(:comments)
+      expect(scope.first.comments_count).to eq(1)
+    end
+  end
 end
