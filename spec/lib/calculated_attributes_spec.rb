@@ -102,10 +102,12 @@ describe 'calculated_attributes' do
     end
   end
 
-  context 'when eager loading models' do
-    it 'includes calculated attributes' do
-      scope = model_scoped(Post).includes(:comments).references(:comments)
-      expect(scope.first.comments_count).to eq(1)
+  if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR == 2
+    context 'when eager loading models' do
+      it 'includes calculated attributes' do
+        scope = model_scoped(Post).includes(:comments).references(:comments)
+        expect(scope.first.comments_count).to eq(1)
+      end
     end
   end
 end
