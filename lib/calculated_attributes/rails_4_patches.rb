@@ -32,9 +32,11 @@ module ActiveRecord
       def instantiate(result_set, aliases)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
-        seen = Hash.new do |i, object_id|
-          i[object_id] = Hash.new do |j, child_class|
-            j[child_class] = {}
+        seen = Hash.new do |k, primary_key|
+          Hash.new do |i, object_id|
+            i[object_id] = Hash.new do |j, child_class|
+              j[child_class] = {}
+            end
           end
         end
 
