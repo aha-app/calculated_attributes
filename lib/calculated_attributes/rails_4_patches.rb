@@ -44,18 +44,29 @@ module ActiveRecord
         parents = model_cache[join_root]
         column_aliases = aliases.column_aliases join_root
 
-        message_bus = ActiveSupport::Notifications.instrumenter
-
-        payload = {
-          record_count: result_set.length,
-          class_name: join_root.base_klass.name
-        }
-
-        message_bus.instrument('instantiation.active_record', payload) do
+        if ActiveRecord::VERSION::MINOR == 1
+          type_caster = result_set.column_type primary_key
+          
           result_set.each do |row_hash|
-            parent = parents[row_hash[primary_key]] ||= join_root.instantiate(row_hash, column_aliases)
+            primary_id = type_caster.type_cast row_hash[primary_key]
+            parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
             @calculated_columns.each { |column| parent[column.right] = model[column.right] } if @calculated_columns
             construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+          end
+        else
+          message_bus = ActiveSupport::Notifications.instrumenter
+
+          payload = {
+            record_count: result_set.length,
+            class_name: join_root.base_klass.name
+          }
+
+          message_bus.instrument('instantiation.active_record', payload) do
+            result_set.each do |row_hash|
+              parent = parents[row_hash[primary_key]] ||= join_root.instantiate(row_hash, column_aliases)
+              @calculated_columns.each { |column| parent[column.right] = model[column.right] } if @calculated_columns
+              construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+            end
           end
         end
 
