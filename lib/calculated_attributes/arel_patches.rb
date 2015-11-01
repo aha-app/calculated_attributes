@@ -1,5 +1,5 @@
-Arel::SelectManager.send(:include, Module.new do
+class Arel::SelectManager
   def projections
     @ctx.projections
   end
-end)
+end

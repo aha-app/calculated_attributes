@@ -17,7 +17,7 @@ module CalculatedAttributes
 end
 ActiveRecord::Base.extend CalculatedAttributes
 
-ActiveRecord::Base.send(:include, Module.new do
+class ActiveRecord::Base
   def calculated(*args)
     if self.class.respond_to? :scoped
       self.class.scoped.calculated(*args).find(id)
@@ -62,9 +62,9 @@ ActiveRecord::Base.send(:include, Module.new do
       end
     super || (no_sym_in_attr && (self.class.calculated.calculated[method] || self.class.base_class.calculated.calculated[method]))
   end
-end)
+end
 
-ActiveRecord::Relation.send(:include, Module.new do
+class ActiveRecord::Relation
   def calculated(*args)
     projections = arel.projections
     args.each do |arg|
@@ -83,4 +83,4 @@ ActiveRecord::Relation.send(:include, Module.new do
     end
     select(projections)
   end
-end)
+end
