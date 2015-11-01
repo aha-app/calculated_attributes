@@ -67,6 +67,10 @@ describe 'calculated_attributes' do
     expect(model_scoped(Post).calculated(:comments_arel).first.comments_arel).to eq(1)
   end
 
+  it 'allows attributes to be defined using class that responds to to_sql' do
+    expect(model_scoped(Post).calculated(:comments_to_sql).first.comments_to_sql).to eq(1)
+  end
+
   it 'maintains previous scope' do
     expect(Post.where(text: 'First post!').calculated(:comments_count).first.comments_count).to eq(1)
     expect(Post.where("posts.text = 'First post!'").calculated(:comments_count).first.comments_count).to eq(1)
