@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-Add each calculated attribute to your model using the `calculated` keyword. It accepts two parameters: a symbol representing the name of the calculated attribute, and a lambda containing a string to calculate the attribute.
+Add each calculated attribute to your model using the `calculated` keyword. It accepts two parameters: a symbol representing the name of the calculated attribute, and a lambda containing a string to calculate the attribute. The lambda can accept arguments.
 
 For example, if we have two models, `Post` and `Comment`, and `Comment` has a `post_id` attribute, we might write the following code to add a comments count to each `Post` record in a relation:
 
@@ -31,6 +31,7 @@ For example, if we have two models, `Post` and `Comment`, and `Comment` has a `p
 class Post < ActiveRecord::Base
 ...
   calculated :comments_count, -> { "select count(*) from comments where comments.post_id = posts.id" }
+  calculated :comments_count_by_user, ->(user) { ["select count(*) from comments where comments.post_id = posts.id and posts.user_id = '%s'", user.id] }
 ...
 end
 ```
@@ -39,6 +40,7 @@ Then, the comments count may be accessed as follows:
 
 ```ruby
 Post.scoped.calculated(:comments_count).first.comments_count
+Post.scoped.calculated(comments_count_by_user: user).first.comments_count_by_user
 #=> 5
 ```
     
@@ -70,6 +72,9 @@ You may also use the `calculated` method on a single model instance, like so:
 ```ruby
 Post.first.calculated(:comments_count).comments_count
 #=> 5
+
+Post.first.calculated(comments_count_by_user: user).comments_count_by_user
+#=> 0
 ```
 
 If you have defined a `calculated` method, results of that method will be returned rather than throwing a method missing error even if you don't explicitly use the `calculated()` call on the instance:
@@ -77,6 +82,8 @@ If you have defined a `calculated` method, results of that method will be return
 ```ruby
 Post.first.comments_count
 #=> 5
+Post.first.comments_count_by_user(user)
+#=> 0
 ```
 
 If you like, you may define `calculated` lambdas using Arel syntax:

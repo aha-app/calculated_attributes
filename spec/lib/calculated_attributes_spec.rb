@@ -13,6 +13,13 @@ describe 'calculated_attributes' do
     expect(model_scoped(Post).calculated(:comments_count).first.comments_count).to eq(1)
   end
 
+  it 'includes parametric calculated attributes' do
+    expect(model_scoped(Post).calculated(comments_by_user: [User.where(username: 'unused').first])
+             .first.comments_by_user).to eq(0)
+    expect(model_scoped(Post).calculated(comments_by_user: [User.where(username: 'test').first])
+             .first.comments_by_user).to eq(1)
+  end
+
   it 'includes multiple calculated attributes' do
     post = model_scoped(Post).calculated(:comments_count, :comments_two).first
     expect(post.comments_count).to eq(1)
@@ -37,8 +44,16 @@ describe 'calculated_attributes' do
     expect(Post.first.calculated(:comments_count).comments_count).to eq(1)
   end
 
+  it 'allows access via model instance method with parameters' do
+    expect(Post.first.calculated(comments_by_user: [User.where(username: 'test').first]).comments_by_user).to eq(1)
+  end
+
   it 'allows anonymous access via model instance method' do
     expect(Post.first.comments_count).to eq(1)
+  end
+
+  it 'allows access via model instance method with parameters' do
+    expect(Post.first.comments_by_user(User.where(username: 'test').first)).to eq(1)
   end
 
   it 'allows anonymous access via model instance method with STI and lambda on base class' do
