@@ -1,4 +1,5 @@
-[![Gem Version](https://badge.fury.io/rb/calculated_attributes.svg)](https://badge.fury.io/rb/calculated_attributes)
+[![Gem Version](https://badge.fury.io/rb/calculated_attributes.svg)](https://badge.fury.io/rb/calculated_attributes) 
+[![CircleCI](https://circleci.com/gh/aha-app/calculated_attributes.svg?style=shield)](https://circleci.com/gh/aha-app/calculated_attributes)
 
 # CalculatedAttributes
 
