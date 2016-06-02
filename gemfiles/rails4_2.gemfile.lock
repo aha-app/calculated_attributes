@@ -70,7 +70,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord (= 4.2.2)
   appraisal (~> 1.0.3)
-  bundler (~> 1.7)
   calculated_attributes!
   rake (~> 10.0)
   rspec (~> 3.1)
