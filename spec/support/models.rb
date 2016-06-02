@@ -2,6 +2,7 @@ class Post < ActiveRecord::Base
   has_many :comments
   belongs_to :user
 
+  calculated :comments_by_user, ->(user) { "select count(*) from comments where comments.post_id = posts.id and comments.user_id = #{user.id}" }
   calculated :comments_count, -> { 'select count(*) from comments where comments.post_id = posts.id' }
   calculated :comments_two, -> { 'select count(*) from comments where comments.post_id = posts.id' }
   calculated :comments_arel, -> { Comment.where(Comment.arel_table[:post_id].eq(Post.arel_table[:id])).select(Arel.sql('count(*)')) }

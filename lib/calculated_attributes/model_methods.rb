@@ -42,9 +42,9 @@ class ActiveRecord::Base
           self.class.base_class
         end
       if class_with_attr.respond_to? :scoped
-        class_with_attr.scoped.calculated(sym).find(id).send(sym)
+        class_with_attr.scoped.calculated(sym => args).find(id).send(sym)
       else
-        class_with_attr.all.calculated(sym).find(id).send(sym)
+        class_with_attr.all.calculated(sym => args).find(id).send(sym)
       end
     else
       super(sym, *args, &block)
@@ -67,16 +67,24 @@ end
 class ActiveRecord::Relation
   def calculated(*args)
     projections = arel.projections
-    args.each do |arg|
-      lam = klass.calculated.calculated[arg] || klass.base_class.calculated.calculated[arg]
-      sql = lam.call
+    args = args.flat_map do |arg|
+      case arg
+      when Symbol then [[arg, []]]
+      when Hash then arg.to_a
+      end
+    end
+
+    args.each do |attribute, arguments|
+      lam = klass.calculated.calculated[attribute] || klass.base_class.calculated.calculated[attribute]
+      sql = lam.call(*arguments)
+      sql = klass.send(:sanitize_sql, *sql) if sql.is_a?(Array)
       new_projection = 
         if sql.is_a?(String)
-          Arel.sql("(#{sql})").as(arg.to_s)
+          Arel.sql("(#{sql})").as(attribute.to_s)
         elsif sql.respond_to? :to_sql
-          Arel.sql("(#{sql.to_sql})").as(arg.to_s)
+          Arel.sql("(#{sql.to_sql})").as(attribute.to_s)
         else
-          sql.as(arg.to_s)
+          sql.as(attribute.to_s)
         end
       new_projection.calculated_attr!
       projections.push new_projection
