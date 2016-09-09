@@ -15,7 +15,7 @@ module ActiveRecord
       # Updates the attribute identified by <tt>attr_name</tt> with the specified +value+. Empty strings
       # for fixnum and float columns are turned into +nil+.
       def write_attribute(attr_name, value)
-        if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR == 2
+        if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR == 2 || ActiveRecord::VERSION::MAJOR == 5
           write_attribute_with_type_cast(attr_name, value, true)
         else
           attr_name = attr_name.to_s
