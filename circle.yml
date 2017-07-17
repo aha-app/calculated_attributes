@@ -1,3 +1,0 @@
-database:
-  override:
-    - echo "no database setup"
