@@ -1,5 +1,7 @@
-class Arel::SelectManager
-  def projections
-    @ctx.projections
+module Arel
+  class SelectManager
+    def projections
+      @ctx.projections
+    end
   end
 end

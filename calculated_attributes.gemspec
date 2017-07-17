@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'calculated_attributes/version'
@@ -20,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'appraisal', '~> 1.0.3'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.1'
-  spec.add_development_dependency 'rubocop', '~> 0.32.0'
+  spec.add_development_dependency 'rubocop', '~> 0.49.0'
   spec.add_development_dependency 'sqlite3', '~> 1.3.10'
 
   spec.add_dependency 'activerecord', '>= 3.2.20'

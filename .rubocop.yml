@@ -1,22 +1,27 @@
 AllCops:
+  TargetRubyVersion: 2.3
+  DisplayCopNames: true
   Exclude:
-    - db/**/*
+    - lib/calculated_attributes/rails_3_patches.rb
+    - lib/calculated_attributes/rails_4_patches.rb
+    - lib/calculated_attributes/rails_5_patches.rb
 
-BlockNesting: 
-  Max: 4
-ClassLength:
-  Enabled: False
-ClassVars:
-  Enabled: False
-CyclomaticComplexity:
-  Enabled: False
-Documentation:
-  Enabled: false
-LineLength:
-  Enabled: false
-MethodLength:
-  Enabled: false
 Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: False
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%w': ()
