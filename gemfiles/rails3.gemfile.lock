@@ -65,7 +65,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (= 3.2.21)
+  activerecord (~> 3.2)
   appraisal (~> 2.2.0)
   bundler (~> 1.15)
   calculated_attributes!
