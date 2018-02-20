@@ -17,3 +17,7 @@ end
 appraise 'rails5_1' do
   gem 'activerecord', '~> 5.1'
 end
+
+appraise 'rails5_2' do
+  gem 'activerecord', '~> 5.2.0.rc1'
+end
