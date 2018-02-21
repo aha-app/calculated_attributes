@@ -5,6 +5,7 @@ AllCops:
     - lib/calculated_attributes/rails_3_patches.rb
     - lib/calculated_attributes/rails_4_patches.rb
     - lib/calculated_attributes/rails_5_patches.rb
+    - lib/calculated_attributes/rails_5_2_patches.rb
 
 Metrics/AbcSize:
   Enabled: false
