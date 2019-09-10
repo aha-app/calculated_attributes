@@ -1,11 +1,8 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
   DisplayCopNames: true
   Exclude:
-    - lib/calculated_attributes/rails_3_patches.rb
-    - lib/calculated_attributes/rails_4_patches.rb
-    - lib/calculated_attributes/rails_5_patches.rb
-    - lib/calculated_attributes/rails_5_2_patches.rb
+    - lib/calculated_attributes/rails_*_patches.rb
 
 Metrics/AbcSize:
   Enabled: false
@@ -25,4 +22,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    '%w': ()
+    "%w": ()
+Style/StringLiterals:
+  Exclude:
+    - gemfiles/*.gemfile

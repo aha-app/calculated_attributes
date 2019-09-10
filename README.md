@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/calculated_attributes.svg)](https://badge.fury.io/rb/calculated_attributes) 
+[![Gem Version](https://badge.fury.io/rb/calculated_attributes.svg)](https://badge.fury.io/rb/calculated_attributes)
 [![CircleCI](https://circleci.com/gh/aha-app/calculated_attributes.svg?style=shield)](https://circleci.com/gh/aha-app/calculated_attributes)
 
 # CalculatedAttributes
@@ -35,7 +35,7 @@ class Post < ActiveRecord::Base
 ...
 end
 ```
-    
+
 Then, the comments count may be accessed as follows:
 
 ```ruby
@@ -43,7 +43,7 @@ Post.scoped.calculated(:comments_count).first.comments_count
 Post.scoped.calculated(comments_count_by_user: user).first.comments_count_by_user
 #=> 5
 ```
-    
+
 Multiple calculated attributes may be attached to each model. If we add a `Tag` model that also has a `post_id`, we can update the Post model as following:
 
 ```ruby
@@ -96,19 +96,23 @@ class Post < ActiveRecord::Base
 end
 ```
 
-## Known Issues
+## Version support
 
-In Rails 4.x, you cannot call `count` on a relation with calculated attributes, e.g.
+Patches are included to support Rails 3.2, 4.x, 5.x, and 6.x. However, only 4.2 and up are tested and actively maintained.
+
+## Known issues
+
+In Rails 4.x and up, you cannot call `count` on a relation with calculated attributes, e.g.
 
 ```ruby
 Post.scoped.calculated(:comments_count).count
 ```
 
-will error. This is because of an [ActiveRecord issue](https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/calculations.rb#L368-L375) that does not permit Arel nodes in the count method.
+will error because ActiveRecord does not permit Arel nodes in the count method.
 
 ## Contributing
 
-1. Fork it ( https://github.com/aha-app/calculated_attributes/fork )
+1. Fork it (https://github.com/aha-app/calculated_attributes/fork)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
