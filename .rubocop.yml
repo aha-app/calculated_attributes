@@ -3,6 +3,7 @@ AllCops:
   DisplayCopNames: true
   Exclude:
     - lib/calculated_attributes/rails_*_patches.rb
+    - vendor/**/*
 
 Metrics/AbcSize:
   Enabled: false
