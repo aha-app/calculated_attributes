@@ -9,7 +9,7 @@ raise "Unsupported ActiveRecord version: #{ActiveRecord::VERSION::MAJOR}" unless
 # Rails 5.2 has its own patches which are different from 5.0. In every other
 # case, just require the patch file for the major version.
 versions = Gem::Version.new(ActiveRecord::VERSION::STRING).canonical_segments.take(2)
-if versions == [5, 2] || versions == [5, 1]
+if [[5, 2], [5, 1]].include?(versions)
   require 'calculated_attributes/rails_5_2_patches'
 else
   require "calculated_attributes/rails_#{ActiveRecord::VERSION::MAJOR}_patches"
