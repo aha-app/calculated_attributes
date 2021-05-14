@@ -29,7 +29,7 @@ module ActiveRecord
     class JoinDependency
       attr_writer :calculated_columns
 
-      def instantiate(result_set, &block)
+      def instantiate(result_set, strict_loading_value, &block)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
         seen = Hash.new { |i, object_id|
@@ -54,7 +54,7 @@ module ActiveRecord
             parent_key = primary_key ? row_hash[primary_key] : row_hash
             parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases, &block)
             @calculated_columns.each { |column| parent[column.right] = model[column.right] } if @calculated_columns
-            construct(parent, join_root, row_hash, seen, model_cache)
+            construct(parent, join_root, row_hash, seen, model_cache, strict_loading_value)
           }
         end
 
