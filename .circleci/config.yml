@@ -3,26 +3,23 @@ jobs:
   test:
     working_directory: ~/calculated_attributes
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:3.1.3
         environment:
           GEM_HOME: ~/calculated_attributes/vendor/bundle
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "calculated_attributes.gemspec" }}
+          key: dependency-cache-1-{{ checksum "calculated_attributes.gemspec" }}
       - run:
-          name: bundle-install
-          command: bundle check || bundle install --jobs=4 --retry=3
-      - run:
-          name: appraisal-install
-          command: bundle exec appraisal install
+          name: Install bundle dependencies
+          command: bundle check --path=vendor/bundle || bundle install --jobs=4 --retry=3 --path=vendor/bundle
       - save_cache:
-          key: dependency-cache-{{ checksum "calculated_attributes.gemspec" }}
+          key: dependency-cache-1-{{ checksum "calculated_attributes.gemspec" }}
           paths:
-            - ./vendor/bundle
+            - vendor/bundle
       - run:
-          name: appraisal-rspec
-          command: bundle exec appraisal rspec
+          name: RSpec
+          command: bundle exec rspec
       - run:
           name: rubocop
           command: bundle exec rubocop
