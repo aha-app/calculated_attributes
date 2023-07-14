@@ -9,17 +9,21 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-1-{{ checksum "calculated_attributes.gemspec" }}
+          key: dependency-cache-v2-{{ checksum "calculated_attributes.gemspec" }}
       - run:
           name: Install bundle dependencies
-          command: bundle check --path=vendor/bundle || bundle install --jobs=4 --retry=3 --path=vendor/bundle
+          command: |
+            bundle check --path=vendor/bundle || bundle install --jobs=4 --retry=3 --path=vendor/bundle
+      - run:
+          name: Appraisal-install
+          command: bundle exec appraisal install
       - save_cache:
-          key: dependency-cache-1-{{ checksum "calculated_attributes.gemspec" }}
+          key: dependency-cache-v2-{{ checksum "calculated_attributes.gemspec" }}
           paths:
             - vendor/bundle
       - run:
           name: RSpec
-          command: bundle exec rspec
+          command: bundle exec appraisal rspec
       - run:
           name: rubocop
           command: bundle exec rubocop
