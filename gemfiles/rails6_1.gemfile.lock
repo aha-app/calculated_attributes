@@ -77,7 +77,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord (~> 6.0)
+  activerecord (~> 6.1)
   appraisal
   bundler
   calculated_attributes!

@@ -7,17 +7,16 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.7.4)
-      activesupport (= 6.1.7.4)
-    activerecord (6.1.7.4)
-      activemodel (= 6.1.7.4)
-      activesupport (= 6.1.7.4)
-    activesupport (6.1.7.4)
+    activemodel (7.0.6)
+      activesupport (= 7.0.6)
+    activerecord (7.0.6)
+      activemodel (= 7.0.6)
+      activesupport (= 7.0.6)
+    activesupport (7.0.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     appraisal (2.5.0)
       bundler
       rake
@@ -71,13 +70,12 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
-    zeitwerk (2.6.8)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord (~> 6.0)
+  activerecord (~> 7.0)
   appraisal
   bundler
   calculated_attributes!
