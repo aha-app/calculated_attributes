@@ -1,15 +1,36 @@
 module CalculatedAttributes
-  def calculated(*args)
+  def calculated(*args, &block)
     @config ||= CalculatedAttributes::Config.new
-    @config.calculated(args.first, args.last) if args.size == 2
+    if block
+      @config.calculated(args.first, options: args[1], &block)
+    elsif args.size == 2
+      @config.calculated(args.first, args.last)
+    elsif args.size == 3
+      @config.calculated(args.first, args.last, options: args[1])
+    end
     @config
   end
 
   class CalculatedAttributes
+    class Callable
+      def initialize(lambda, options = {})
+        @lambda = lambda
+        @options = options
+      end
+
+      attr_reader :options
+
+      def call(*args)
+        @lambda.call(*args)
+      end
+    end
+
     class Config
-      def calculated(title = nil, lambda = nil)
+      def calculated(title = nil, lambda = nil, options: {}, &block)
+        lambda = block if block_given? && !lambda
+
         @calculations ||= {}
-        @calculations[title] ||= lambda if title && lambda
+        @calculations[title] ||= Callable.new(lambda, options) if title && lambda
         @calculations
       end
     end
@@ -77,9 +98,10 @@ module ActiveRecord
         end
       end
 
+      callables = []
       args.each do |attribute, arguments|
-        lam = klass.calculated.calculated[attribute] || klass.base_class.calculated.calculated[attribute]
-        sql = lam.call(*arguments)
+        callable = klass.calculated.calculated[attribute] || klass.base_class.calculated.calculated[attribute]
+        sql = callable.call(*arguments)
         sql = klass.send(:sanitize_sql, *sql) if sql.is_a?(Array)
         new_projection =
           if sql.is_a?(String)
@@ -91,8 +113,13 @@ module ActiveRecord
           end
         new_projection.calculated_attr!
         projections.push new_projection
+        callables.push(callable)
       end
-      select(projections)
+      callables.inject(self) do |self1, callable|
+        (callable.options[:requires_scopes] || []).inject(self1) do |self2, scope|
+          self2.send(scope)
+        end
+      end.select(projections)
     end
   end
 end

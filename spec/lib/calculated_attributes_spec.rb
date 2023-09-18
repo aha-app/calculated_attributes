@@ -32,6 +32,11 @@ describe 'calculated_attributes' do
     expect(post.comments_two).to eq(1)
   end
 
+  it 'allows specifying required scopes for calculation' do
+    post = model_scoped(Post).calculated(:recent_comment_count).first
+    expect(post.recent_comment_count).to eq(1)
+  end
+
   it 'nests with where query' do
     expect(Post.where(id: 1).calculated(:comments_count).first.comments_count).to eq(1)
   end
