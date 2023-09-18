@@ -7,6 +7,14 @@ class Post < ActiveRecord::Base
   calculated :comments_two, -> { 'select count(*) from comments where comments.post_id = posts.id' }
   calculated :comments_arel, -> { Comment.where(Comment.arel_table[:post_id].eq(Post.arel_table[:id])).select(Arel.sql('count(*)')) }
   calculated :comments_to_sql, -> { Comment.where('comments.post_id = posts.id').select('count(*)') }
+
+  scope :recent, -> {
+    where(created_at: (Time.now - 1.day)..Time.now)
+  }
+
+  calculated :recent_comment_count, requires_scopes: [:recent] do
+    'select count(*) from comments where comments.post_id = posts.id'
+  end
 end
 
 class Tutorial < Post
