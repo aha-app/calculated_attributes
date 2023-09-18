@@ -13,14 +13,12 @@ module CalculatedAttributes
 
   class CalculatedAttributes
     class Callable
-      def initialize(lambda, options={})
+      def initialize(lambda, options = {})
         @lambda = lambda
         @options = options
       end
 
-      def options
-        @options
-      end
+      attr_reader :options
 
       def call(*args)
         @lambda.call(*args)
@@ -117,9 +115,9 @@ module ActiveRecord
         projections.push new_projection
         callables.push(callable)
       end
-      callables.inject(self) do |s, callable|
-        (callable.options[:requires_scopes] || []).inject(s) do |_s, scope|
-          _s.send(scope)
+      callables.inject(self) do |self1, callable|
+        (callable.options[:requires_scopes] || []).inject(self1) do |self2, scope|
+          self2.send(scope)
         end
       end.select(projections)
     end
