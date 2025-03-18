@@ -7,7 +7,7 @@ module ActiveRecord
         return false if @attribute_methods_generated
         # Use a mutex; we don't want two threads simultaneously trying to define
         # attribute methods.
-        generated_attribute_methods.synchronize do
+        GeneratedAttributeMethods::LOCK.synchronize do
           return false if @attribute_methods_generated
           superclass.define_attribute_methods unless base_class?
           columns_to_define =
