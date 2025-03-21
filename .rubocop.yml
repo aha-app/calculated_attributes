@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.3
   DisplayCopNames: true
   Exclude:
     - lib/calculated_attributes/rails_*_patches.rb
