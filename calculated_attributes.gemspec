@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'sqlite3'
 
-  spec.add_dependency 'activerecord', '>= 6.0.0', '< 8'
+  spec.add_dependency 'activerecord', '>= 7.0.0', '< 9'
 end
