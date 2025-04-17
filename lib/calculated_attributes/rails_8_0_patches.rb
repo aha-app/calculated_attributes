@@ -19,7 +19,6 @@ module ActiveRecord
             end
           super(columns_to_define)
           @attribute_methods_generated = true
-          @attribute_methods_generated = true
         end
       end
     end
