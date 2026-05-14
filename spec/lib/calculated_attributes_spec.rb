@@ -109,6 +109,24 @@ describe 'calculated_attributes' do
     expect(model_scoped(Article).calculated(:sub_comments).first.sub_comments).to eq(1)
   end
 
+  context 'when using aggregate calculations' do
+    it 'supports count on a relation with calculated attributes' do
+      expect(model_scoped(Post).calculated(:comments_count).count).to eq(Post.count)
+    end
+
+    it 'supports count on a relation with multiple calculated attributes' do
+      expect(model_scoped(Post).calculated(:comments_count, :comments_two).count).to eq(Post.count)
+    end
+
+    it 'supports sum on a relation with calculated attributes' do
+      expect(model_scoped(Post).calculated(:comments_count).sum(:id)).to eq(Post.sum(:id))
+    end
+
+    it 'supports count with where clause and calculated attributes' do
+      expect(Post.where(text: 'First post!').calculated(:comments_count).count).to eq(1)
+    end
+  end
+
   context 'when joining models' do
     it 'includes calculated attributes' do
       expect(model_scoped(Post).joins(:comments).calculated(:comments_count).first.comments_count).to eq(1)
