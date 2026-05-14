@@ -121,5 +121,12 @@ module ActiveRecord
         end
       end.select(projections)
     end
+
+    private
+
+    def calculate(operation, column_name)
+      self.select_values = [] if select_values.any? { |p| p.is_a?(Arel::Nodes::Node) && p.calculated_attr? }
+      super
+    end
   end
 end
