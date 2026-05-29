@@ -5,7 +5,7 @@ require 'active_record'
 require 'calculated_attributes/rails_patches'
 require 'calculated_attributes/arel_patches'
 
-raise "Unsupported ActiveRecord version: #{ActiveRecord::VERSION::MAJOR}" unless [7, 8].include? ActiveRecord::VERSION::MAJOR
+raise "Unsupported ActiveRecord version: #{ActiveRecord::VERSION::MAJOR}" unless [8].include? ActiveRecord::VERSION::MAJOR
 
 require "calculated_attributes/rails_#{ActiveRecord::VERSION::MAJOR}_#{ActiveRecord::VERSION::MINOR}_patches"
 
