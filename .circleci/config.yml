@@ -2,21 +2,38 @@ version: 2
 jobs:
   test:
     working_directory: ~/calculated_attributes
+
     docker:
       - image: cimg/ruby:3.3.4
         environment:
           GEM_HOME: ~/calculated_attributes/vendor/bundle
+
     steps:
-      - checkout
+      - run:
+          name: Checkout code
+          command: |
+            git clone https://github.com/aha-app/calculated_attributes.git .
+            git checkout "${CIRCLE_BRANCH}"
+
+            if [ -n "${CIRCLE_TAG}" ]; then
+              git checkout "${CIRCLE_TAG}"
+            elif [ -n "${CIRCLE_PR_NUMBER}" ]; then
+              git fetch origin "pull/${CIRCLE_PR_NUMBER}/head:pr-${CIRCLE_PR_NUMBER}"
+              git checkout "pr-${CIRCLE_PR_NUMBER}"
+            fi
+
       - restore_cache:
           key: dependency-cache-v2-{{ checksum "calculated_attributes.gemspec" }}
+
       - run:
           name: Install bundle dependencies
           command: |
             bundle check --path=vendor/bundle || bundle install --jobs=4 --retry=3 --path=vendor/bundle
+
       - run:
           name: Appraisal-install
           command: bundle exec appraisal install
+
       - save_cache:
           key: dependency-cache-v2-{{ checksum "calculated_attributes.gemspec" }}
           paths:
@@ -30,6 +47,7 @@ jobs:
 
 workflows:
   version: 2
+
   test:
     jobs:
       - test
